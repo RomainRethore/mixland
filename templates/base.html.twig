@@ -17,12 +17,24 @@
 	<body>
 		{% block body %}
 			<nav>
+				{% if app.user is null  %}
+					<button>
+						<a href={{path("app_register")}}>Register</a>
+					</button>
+					<button>
+						<a href={{path("app_login")}}>Login</a>
+					</button>
+				{% endif %}
 				<button>
-					<a href="#">Register</a>
+					<a href={{path("home")}}>Home</a>
 				</button>
 				<button>
-					<a href="#">Login</a>
+					<a href={{path("app_mix")}}>My Mixes</a>
 				</button>
+				<button>
+					<a href={{path("app_logout")}}>Logout</a>
+				</button>
+
 			</nav>
 			<header>MixLand</header>
 			<main>
