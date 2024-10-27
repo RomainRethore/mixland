@@ -3,6 +3,9 @@
 {% block title %}Register
 {% endblock %}
 
+{% block header %}Create your Land here
+{% endblock %}
+
 {% block content %}
 	{% for flash_error in app.flashes('verify_email_error') %}
 		<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
@@ -13,6 +16,7 @@
 	{{ form_errors(registrationForm) }}
 
 	{{ form_start(registrationForm) }}
+	{{ form_row(registrationForm.name,{label:'Your name'})}}
 	{{ form_row(registrationForm.email) }}
 	{{ form_row(registrationForm.plainPassword, {
             label: 'Password'
