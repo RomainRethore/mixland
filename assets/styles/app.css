@@ -38,7 +38,9 @@ main {
     /* background-color: red; */
 }
 
-form {
+#mix-form {}
+
+/* form {
     width: 50%;
     border: 0.1rem solid black;
     padding: 1rem;
@@ -59,4 +61,4 @@ form {
     input {
         width: 50%;
     }
-}
+} */
