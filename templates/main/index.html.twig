@@ -7,18 +7,12 @@
 {% endblock %}
 
 {% block content %}
-	<div class="example-wrapper">
-		<h1>Hello
-			{{ controller_name }}! ✅</h1>
-
-		This friendly message is coming from:
-		<ul>
-			<li>Your controller at
-				<code>/Applications/MAMP/htdocs/mixland/src/Controller/MainController.php</code>
-			</li>
-			<li>Your template at
-				<code>/Applications/MAMP/htdocs/mixland/templates/main/index.html.twig</code>
-			</li>
-		</ul>
+{% for mix in mixes %}
+	<div class="mixBox">
+		<h2>{{mix.title}}</h2>
+		<img src="{{mix.cover}}" alt="">
+		<audio controls src="{{mix.audio}}"></audio>
+		<p>{{mix.description}}</p>
 	</div>
+{% endfor %}
 {% endblock %}

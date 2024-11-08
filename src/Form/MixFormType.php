@@ -44,10 +44,27 @@ class MixFormType extends AbstractType
                     ])
                 ],
             ])
-            ->add('user', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
-                'multiple' => true,
+            ->add('cover', FileType::class, [
+                'label' => 'File (JPG file)',
+
+                // unmapped means that this field is not associated to any entity property
+                'mapped' => false,
+
+                // make it optional so you don't have to re-upload the JPG file
+                // every time you edit the Product details
+                'required' => false,
+
+                // unmapped fields can't define their validation using attributes
+                // in the associated entity, so you can use the PHP constraint classes
+                'constraints' => [
+                    new File([
+                        'maxSize' => '1024k',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                        ],
+                        'mimeTypesMessage' => 'Please upload a valid jpg file',
+                    ])
+                ]
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Upload Mix',

@@ -34,6 +34,9 @@ class Mix
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'mixes')]
     private Collection $user;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $cover = null;
+
     public function __construct()
     {
         $this->user = new ArrayCollection();
@@ -112,6 +115,18 @@ class Mix
     public function removeUser(User $user): static
     {
         $this->user->removeElement($user);
+
+        return $this;
+    }
+
+    public function getCover(): ?string
+    {
+        return $this->cover;
+    }
+
+    public function setCover(?string $cover): static
+    {
+        $this->cover = $cover;
 
         return $this;
     }

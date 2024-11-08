@@ -13,7 +13,16 @@
 			<a href={{path("app_mix_new")}}>Upload a mix</a>
 		</button>
 	</nav>
-	<div class="example-wrapper">
+{% for mix in mixes %}
+	<div class="mixBox">
+		<h2>{{mix.title}}</h2>
+		<img src="{{mix.cover}}" alt="">
+		<audio controls src="{{mix.audio}}"></audio>
+		<p>{{mix.description}}</p>
+	</div>
+{% endfor %}
+
+	{# <div class="example-wrapper">
 		<h1>Hello
 			{{ controller_name }}! ✅</h1>
 
@@ -26,5 +35,5 @@
 				<code>/Applications/MAMP/htdocs/mixland/templates/mix/index.html.twig</code>
 			</li>
 		</ul>
-	</div>
+	</div> #}
 {% endblock %}
