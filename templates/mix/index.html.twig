@@ -19,21 +19,7 @@
 		<img src="{{mix.cover}}" alt="">
 		<audio controls src="{{mix.audio}}"></audio>
 		<p>{{mix.description}}</p>
+		<button><a href="{{path('app_mix_delete',parameters={id:mix.id,action:'ask'} ,relative=true)}}">Delete</a></button>
 	</div>
 {% endfor %}
-
-	{# <div class="example-wrapper">
-		<h1>Hello
-			{{ controller_name }}! ✅</h1>
-
-		This friendly message is coming from:
-		<ul>
-			<li>Your controller at
-				<code>/Applications/MAMP/htdocs/mixland/src/Controller/MixController.php</code>
-			</li>
-			<li>Your template at
-				<code>/Applications/MAMP/htdocs/mixland/templates/mix/index.html.twig</code>
-			</li>
-		</ul>
-	</div> #}
 {% endblock %}

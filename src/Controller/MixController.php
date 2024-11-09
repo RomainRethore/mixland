@@ -19,11 +19,13 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 class MixController extends AbstractController
 {
     #[Route('/mix', name: 'app_mix')]
-    public function index(MixRepository $mixRepository): Response
+    public function index(): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $mixes = $this->getUser()->getMixes();
 
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+        $mixes = $user->getMixes();
 
         return $this->render('mix/index.html.twig', [
             'controller_name' => 'MixController',
@@ -58,6 +60,7 @@ class MixController extends AbstractController
 
                 $newFilename = $safeFilename . '-' . uniqid() . '.' . $mixFile->getClientOriginalExtension();
 
+                /** @var \App\Entity\User $user */
                 $user = $this->getUser();
 
                 $userDirectory = $mixesDirectory . '/' . $user->getId();
@@ -85,6 +88,7 @@ class MixController extends AbstractController
 
                 $newFilename = $safeFilename . '-' . uniqid() . '.' . $mixCover->getClientOriginalExtension();
 
+                /** @var \App\Entity\User $user */
                 $user = $this->getUser();
 
                 $userDirectory = $mixesDirectory . '/' . $user->getId();
@@ -114,6 +118,27 @@ class MixController extends AbstractController
 
         return $this->render('mix/new.html.twig', [
             'form' => $form
+        ]);
+    }
+
+    #[Route('/mix/delete/{id}/{action}', name: 'app_mix_delete')]
+    public function delete(int $id, string $action, Mix $mix, MixRepository $MixRepository, EntityManagerInterface $entityManager): Response
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        $mix = $MixRepository->find($id);
+
+        if ($action === 'confirm') {
+            $entityManager->remove($mix);
+            $entityManager->flush();
+
+            $this->addFlash('message', 'Mix ' . $mix->getTitle() . ' deleted successfully');
+
+            return $this->redirectToRoute('app_mix');
+        }
+
+        return $this->render('mix/delete.html.twig', [
+            'mix' => $mix
         ]);
     }
 }
