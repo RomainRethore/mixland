@@ -20,6 +20,7 @@
 		<audio controls src="{{mix.audio}}"></audio>
 		<p>{{mix.description}}</p>
 		<button><a href="{{path('app_mix_delete',parameters={id:mix.id,action:'ask'} ,relative=true)}}">Delete</a></button>
+		<button><a href="{{path('app_mix_update',parameters={id:mix.id} ,relative=true)}}">Update</a></button>
 	</div>
 {% endfor %}
 {% endblock %}

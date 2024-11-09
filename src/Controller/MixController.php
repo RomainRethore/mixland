@@ -15,6 +15,8 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
 
 class MixController extends AbstractController
 {
@@ -139,6 +141,38 @@ class MixController extends AbstractController
 
         return $this->render('mix/delete.html.twig', [
             'mix' => $mix
+        ]);
+    }
+
+    #[Route('/mix/{id}/update', name: 'app_mix_update')]
+    public function update(Request $request, int $id, Mix $mix, EntityManagerInterface $entityManager): Response
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        $form = $this->createForm(MixFormType::class, $mix, [
+            'attr' => ['id' => 'mix-form'],
+        ]);
+
+        $form->add('submit', SubmitType::class, [
+            'label' => 'Update Mix',
+        ]);
+
+
+        $form->handleRequest($request);
+
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $entityManager->persist($mix);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Mix updated successfully');
+
+            return $this->redirectToRoute('app_mix');
+        }
+
+        return $this->render('mix/update.html.twig', [
+            'form' => $form
         ]);
     }
 }
