@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>
+			MixLand -
 			{% block title %}Welcome!
 			{% endblock %}
 		</title>
@@ -17,26 +18,49 @@
 	<body>
 		{% block body %}
 			<nav>
-				{% if app.user is null  %}
+				<div>
 					<button>
-						<a href={{path("app_register")}}>Register</a>
+						<a href={{path("home")}}>Home</a>
 					</button>
 					<button>
-						<a href={{path("app_login")}}>Login</a>
+						<a href={{path("app_mix")}}>My Land</a>
 					</button>
-				{% endif %}
-				<button>
-					<a href={{path("home")}}>Home</a>
-				</button>
-				<button>
-					<a href={{path("app_mix")}}>My Mixes</a>
-				</button>
-				<button>
-					<a href={{path("app_logout")}}>Logout</a>
-				</button>
-
+				</div>
+				<div>
+					<button>
+						<h1>
+							<a href={{path("home")}}>MixLand</a>
+						</h1>
+					</button>
+				</div>
+				<div>
+					{% if app.user is null  %}
+						<button>
+							<a href={{path("app_register")}}>Register</a>
+						</button>
+						<button>
+							<a href={{path("app_login")}}>Login</a>
+						</button>
+					{% endif %}
+					{% if app.user != null %}
+						<button>
+							<a href={{path("app_logout")}}>Logout</a>
+						</button>
+					{% endif %}
+				</div>
 			</nav>
-			<header>MixLand</header>
+			<header>
+				<h2>
+					{% block header %}{% endblock %}
+				</h2>
+			</header>
+				{% for label, messages in app.flashes %}
+					{% for message in messages %}
+						<div class="flash-{{ label }}">
+							{{ message }}
+						</div>
+					{% endfor %}
+				{% endfor %}
 			<main>
 				{% block content %}{% endblock %}
 			</main>

@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Delete
+{% endblock %}
+
+{% block header %}
+	{{mix.title}} :
+{% endblock %}
+
+{% block content %}
+    <div>
+        <p>Are you sure you want to delete {{mix.title}} ?</p>
+		<button><a href="{{path('app_mix_delete',parameters={id:mix.id,action:'confirm'} ,relative=true)}}">YES</a></button>
+		<button><a href="{{path('app_mix' ,relative=true)}}">NO</a></button>
+    </div>
+{% endblock %}
