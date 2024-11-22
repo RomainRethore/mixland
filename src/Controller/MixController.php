@@ -145,28 +145,83 @@ class MixController extends AbstractController
     }
 
     #[Route('/mix/{id}/update', name: 'app_mix_update')]
-    public function update(Request $request, int $id, Mix $mix, EntityManagerInterface $entityManager): Response
+    public function update(Request $request, int $id, Mix $mix, EntityManagerInterface $entityManager, SluggerInterface $slugger, #[Autowire('%kernel.project_dir%/public/uploads/')] string $mixesDirectory): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         $form = $this->createForm(MixFormType::class, $mix, [
             'attr' => ['id' => 'mix-form'],
-        ]);
-
-        $form->add('submit', SubmitType::class, [
+        ])->add('submit', SubmitType::class, [
             'label' => 'Update Mix',
-        ]);
-
+        ]);;
 
         $form->handleRequest($request);
 
-
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $mixFile = $form->get('audio')->getData();
+            $mixCover = $form->get('cover')->getData();
+
+            if ($mixFile) {
+
+                $originalFilename = pathinfo($mixFile->getClientOriginalName(), PATHINFO_FILENAME);
+
+                $safeFilename = $slugger->slug($originalFilename);
+
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $mixFile->getClientOriginalExtension();
+
+                /** @var \App\Entity\User $user */
+                $user = $this->getUser();
+
+                $userDirectory = $mixesDirectory . '/' . $user->getId();
+
+                if (!is_dir($userDirectory)) {
+                    mkdir($userDirectory, 0777, true);
+                }
+
+                try {
+                    $mixFile->move($userDirectory, $newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Mix file could not be uploaded');
+
+                    return $this->redirectToRoute('app_mix');
+                }
+
+                $mix->setAudio('uploads/' . $user->getId() . '/' . $newFilename);
+            }
+
+            if ($mixCover) {
+
+                $originalFilename = pathinfo($mixCover->getClientOriginalName(), PATHINFO_FILENAME);
+
+                $safeFilename = $slugger->slug($originalFilename);
+
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $mixCover->getClientOriginalExtension();
+
+                /** @var \App\Entity\User $user */
+                $user = $this->getUser();
+
+                $userDirectory = $mixesDirectory . '/' . $user->getId();
+
+                if (!is_dir($userDirectory)) {
+                    mkdir($userDirectory, 0777, true);
+                }
+
+                try {
+                    $mixCover->move($userDirectory, $newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Mix cover could not be uploaded');
+
+                    return $this->redirectToRoute('app_mix');
+                }
+
+                $mix->setCover('uploads/' . $user->getId() . '/' . $newFilename);
+            }
 
             $entityManager->persist($mix);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Mix updated successfully');
+            $this->addFlash('success', 'Mix created successfully');
 
             return $this->redirectToRoute('app_mix');
         }

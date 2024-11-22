@@ -2,6 +2,10 @@ html {
     background-color: black;
 }
 
+img {
+    max-width: 100px;
+}
+
 body {
     width: 66vw;
     /* height: 100vh; */

@@ -33,7 +33,7 @@ class MixFormType extends AbstractType
                 // in the associated entity, so you can use the PHP constraint classes
                 'constraints' => [
                     new File([
-                        'maxSize' => '10024k',
+                        'maxSize' => '500M',
                         'mimeTypes' => [
                             'audio/mpeg',
                         ],
@@ -42,7 +42,7 @@ class MixFormType extends AbstractType
                 ],
             ])
             ->add('cover', FileType::class, [
-                'label' => 'File (JPG file)',
+                'label' => 'File (JPG or PNG file)',
 
                 // unmapped means that this field is not associated to any entity property
                 'mapped' => false,
@@ -58,8 +58,9 @@ class MixFormType extends AbstractType
                         'maxSize' => '1024k',
                         'mimeTypes' => [
                             'image/jpeg',
+                            'image/png',
                         ],
-                        'mimeTypesMessage' => 'Please upload a valid jpg file',
+                        'mimeTypesMessage' => 'Please upload a valid jpg or png file',
                     ])
                 ]
             ])
