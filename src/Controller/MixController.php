@@ -8,6 +8,7 @@ use App\Form\MixFormType;
 use App\Repository\MixRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Id;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -16,10 +17,13 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+
 
 
 class MixController extends AbstractController
 {
+
     #[Route('/mix', name: 'app_mix')]
     public function index(): Response
     {
@@ -28,10 +32,19 @@ class MixController extends AbstractController
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
         $mixes = $user->getMixes();
-
         return $this->render('mix/index.html.twig', [
-            'controller_name' => 'MixController',
+            'page_name' => 'My Land',
             'mixes' => $mixes
+        ]);
+    }
+
+    #[Route('/mix/show/{id}', name: 'app_mix_show')]
+    public function show(int $id, MixRepository $mixRepository): Response
+    {
+        $mix = $mixRepository->find($id);
+        return $this->render('mix/index.html.twig', [
+            'page_name' => $mix->getTitle(),
+            'mixes' => [$mix]
         ]);
     }
 
@@ -144,7 +157,7 @@ class MixController extends AbstractController
         ]);
     }
 
-    #[Route('/mix/{id}/update', name: 'app_mix_update')]
+    #[Route('/mix/update/{id}', name: 'app_mix_update')]
     public function update(Request $request, int $id, Mix $mix, EntityManagerInterface $entityManager, SluggerInterface $slugger, #[Autowire('%kernel.project_dir%/public/uploads/')] string $mixesDirectory): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
@@ -153,7 +166,12 @@ class MixController extends AbstractController
             'attr' => ['id' => 'mix-form'],
         ])->add('submit', SubmitType::class, [
             'label' => 'Update Mix',
-        ]);;
+        ])->add('cancel', SubmitType::class, [
+            'label' => 'Cancel',
+            'attr' => [
+                'formnovalidate' => true,
+            ],
+        ]);
 
         $form->handleRequest($request);
 

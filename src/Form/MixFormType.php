@@ -21,7 +21,7 @@ class MixFormType extends AbstractType
             ->add('tracklist')
             ->add('audio', FileType::class, [
                 'label' => 'File (MP3 file)',
-
+                'help' => 'Max 500MB',
                 // unmapped means that this field is not associated to any entity property
                 'mapped' => false,
 

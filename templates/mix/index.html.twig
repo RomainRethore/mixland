@@ -1,26 +1,40 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}My Land
+{% block title %}
+	{{page_name}}
 {% endblock %}
 
 {% block header %}
-	Your mixes :
+	{{page_name}}
 {% endblock %}
 
 {% block content %}
-	<nav>
-		<button>
-			<a href={{path("app_mix_new")}}>Upload a mix</a>
-		</button>
-	</nav>
-{% for mix in mixes %}
-	<div class="mixBox">
-		<h2>{{mix.title}}</h2>
-		<img src="{{mix.cover}}" alt="">
-		<audio controls src="{{mix.audio}}"></audio>
-		<p>{{mix.description}}</p>
-		<button><a href="{{path('app_mix_delete',parameters={id:mix.id,action:'ask'} ,relative=true)}}">Delete</a></button>
-		<button><a href="{{path('app_mix_update',parameters={id:mix.id} ,relative=true)}}">Update</a></button>
-	</div>
-{% endfor %}
+	{% if page_name == 'My Land' %}
+		<nav>
+			<button>
+				<a href={{path("app_mix_new")}}>Upload a mix</a>
+			</button>
+		</nav>
+	{% endif %}
+	{% for mix in mixes %}
+		<div class="mixBox">
+			{% if page_name == 'My Land' %}
+				<h2>{{mix.title}}</h2>
+			{% endif %}
+			<img src="/{{mix.cover}}" alt="">
+			<audio controls src="{{mix.audio}}"></audio>
+			<p>{{mix.description}}</p>
+			<button>
+				<a href="{{path('app_mix_delete',parameters={id:mix.id,action:'ask'} ,relative=true)}}">Delete</a>
+			</button>
+			<button>
+				<a href="{{path('app_mix_update',parameters={id:mix.id} ,relative=true)}}">Update</a>
+			</button>
+			{% if page_name == 'My Land' %}
+				<button>
+					<a href="{{path('app_mix_show',parameters={id:mix.id} ,relative=true)}}">Details</a>
+				</button>
+			{% endif %}
+		</div>
+	{% endfor %}
 {% endblock %}

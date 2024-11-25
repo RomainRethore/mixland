@@ -15,8 +15,18 @@ class MainController extends AbstractController
     {
         $mixes = $mixRepository->findAll();
         return $this->render('main/index.html.twig', [
-            'controller_name' => 'MainController',
+            'page_name' => 'Home',
             'mixes' => $mixes
+        ]);
+    }
+
+    #[Route('/home/{id}', name: 'home_mix_show')]
+    public function show(int $id, Mix $mix, MixRepository $mixRepository): Response
+    {
+        $mix = $mixRepository->find($id);
+        return $this->render('main/index.html.twig', [
+            'page_name' => $mix->getTitle(),
+            'mixes' => [$mix]
         ]);
     }
 }

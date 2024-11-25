@@ -1,23 +1,32 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Home
+{% block title %}
+	{{page_name}}
 {% endblock %}
 
-{% block header %}Home
+{% block header %}
+	{{page_name}}
 {% endblock %}
 
 {% block content %}
-{% for mix in mixes %}
-	<div class="mixBox">
-		<h2>{{mix.title}}</h2>
-		<h3>Uploaded by 
-			{% for user in mix.getUser %}
-    			{{ user.name }} 
-			{% endfor %}
-		</h3>
-		<img src="{{mix.cover}}" alt="">
-		<audio controls src="{{mix.audio}}"></audio>
-		<p>{{mix.description}}</p>
-	</div>
-{% endfor %}
+	{% for mix in mixes %}
+		<div class="mixBox">
+			{% if page_name == 'Home' %}
+				<h2>{{mix.title}}</h2>
+			{% endif %}
+			<h3>Uploaded by
+				{% for user in mix.getUser %}
+					{{ user.name }}
+				{% endfor %}
+			</h3>
+			<img src="/{{mix.cover}}" alt="">
+			<audio controls src="{{mix.audio}}"></audio>
+			<p>{{mix.description}}</p>
+			{% if page_name == 'Home' %}
+				<button>
+					<a href="{{path('home_mix_show',parameters={id:mix.id} ,relative=true)}}">Details</a>
+				</button>
+			{% endif %}
+		</div>
+	{% endfor %}
 {% endblock %}
