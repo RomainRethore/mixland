@@ -13,14 +13,19 @@
 			<a href={{path("app_mix_new")}}>Upload a mix</a>
 		</button>
 	</nav>
-{% for mix in mixes %}
-	<div class="mixBox">
-		<h2>{{mix.title}}</h2>
-		<img src="{{mix.cover}}" alt="">
-		<audio controls src="{{mix.audio}}"></audio>
-		<p>{{mix.description}}</p>
-		<button><a href="{{path('app_mix_delete',parameters={id:mix.id,action:'ask'} ,relative=true)}}">Delete</a></button>
-		<button><a href="{{path('app_mix_update',parameters={id:mix.id} ,relative=true)}}">Update</a></button>
-	</div>
-{% endfor %}
+	{% for mix in mixes %}
+		<div class="mixBox">
+			<h2>{{mix.title}}</h2>
+			{# <img src="{{mix.cover}}" alt=""> #}
+			<img src="{{asset('img/' ~ mix.cover)}}" alt="">
+			<audio controls src="{{mix.audio}}"></audio>
+			<p>{{mix.description}}</p>
+			<button>
+				<a href="{{path('app_mix_delete',parameters={id:mix.id,action:'ask'} ,relative=true)}}">Delete</a>
+			</button>
+			<button>
+				<a href="{{path('app_mix_update',parameters={id:mix.id} ,relative=true)}}">Update</a>
+			</button>
+		</div>
+	{% endfor %}
 {% endblock %}
