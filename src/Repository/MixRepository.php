@@ -16,6 +16,16 @@ class MixRepository extends ServiceEntityRepository
         parent::__construct($registry, Mix::class);
     }
 
+    public function searchMixes(string $searchTerm): array
+    {
+        return $this->createQueryBuilder('m')
+            ->where('m.title LIKE :searchTerm')
+            ->orWhere('m.description LIKE :searchTerm')
+            ->setParameter('searchTerm', '%' . $searchTerm . '%')
+            ->orderBy('m.title', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
     //    /**
     //     * @return Mix[] Returns an array of Mix objects
     //     */

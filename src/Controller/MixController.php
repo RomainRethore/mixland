@@ -17,6 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
+use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 
 class MixController extends AbstractController
 {
@@ -228,6 +229,22 @@ class MixController extends AbstractController
 
         return $this->render('mix/update.html.twig', [
             'form' => $form
+        ]);
+    }
+
+    #[Route('/mix/search', name: 'app_mix_search', methods: ['GET'])]
+    public function searchMixes(Request $request, MixRepository $mixRepository): Response
+    {
+        // $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        $searchTerm = $request->query->get('searchTerm');
+        // dd($searchTerm);
+
+        $mixes = $mixRepository->searchMixes($searchTerm);
+        // dd($mixes);
+
+        return $this->render('main/index.html.twig', [
+            'mixes' => $mixes
         ]);
     }
 }

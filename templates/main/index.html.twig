@@ -7,17 +7,26 @@
 {% endblock %}
 
 {% block content %}
-{% for mix in mixes %}
-	<div class="mixBox">
-		<h2>{{mix.title}}</h2>
-		<h3>Uploaded by 
-			{% for user in mix.getUser %}
-    			{{ user.name }} 
-			{% endfor %}
-		</h3>
-		<img src="{{mix.cover}}" alt="">
-		<audio controls src="{{mix.audio}}"></audio>
-		<p>{{mix.description}}</p>
-	</div>
-{% endfor %}
-{% endblock %}
+	{# <nav>
+						<form method="GET" action="{{path('app_mix_search')}}">
+							<label for="searchTerm">Find a mix :
+							</label><input name="searchTerm" type="text">
+							<button type="submit">Search</button>
+						</form>
+					</nav>
+					{{dump(mixes)}} #}
+	{{form(form)}}
+		{% for mix in mixes %}
+			<div class="mixBox">
+				<h2>{{mix.title}}</h2>
+				<h3>Uploaded by
+					{% for user in mix.getUser %}
+						{{ user.name }}
+					{% endfor %}
+				</h3>
+				<img src="{{mix.cover}}" alt="">
+				<audio controls src="{{mix.audio}}"></audio>
+				<p>{{mix.description}}</p>
+			</div>
+		{% endfor %}
+	{% endblock %}
