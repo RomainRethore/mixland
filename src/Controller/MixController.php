@@ -6,6 +6,7 @@ use App\Entity\Mix;
 use App\Entity\User;
 use App\Form\MixFormType;
 use App\Repository\MixRepository;
+use App\Service\MailService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Id;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,7 +37,7 @@ class MixController extends AbstractController
     }
 
     #[Route('mix/new', name: 'app_mix_new')]
-    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger, #[Autowire('%kernel.project_dir%/public/uploads/')] string $mixesDirectory): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, MailService $mailService, SluggerInterface $slugger, #[Autowire('%kernel.project_dir%/public/uploads/')] string $mixesDirectory): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
@@ -114,6 +115,8 @@ class MixController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Mix created successfully');
+
+            $mailService->sendMixCreatedEmail($mix, $this->getUser());
 
             return $this->redirectToRoute('app_mix');
         }
