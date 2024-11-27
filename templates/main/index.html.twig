@@ -7,6 +7,23 @@
 {% endblock %}
 
 {% block content %}
+	<p data-controller='hello'></p>
+	<div data-controller='targeter'>
+		<input type="text" data-targeter-target="input">
+		<button data-action="click->targeter#log">Afficher</button>
+	</div>
+	<div data-controller='values' data-values-greeting-value="YOYO" data-values-name-value="Robert">
+		<button data-action="click->values#showAlert">Afficher une alerte</button>
+	</div>
+	<div data-controller="event">
+		<button data-action="event#log">Bouton 1</button>
+		<button data-action="event#log">Bouton 2</button>
+		<button data-action="event#log">Bouton 3</button>
+	</div>
+	<div data-controller="majtext">
+		<p data-majtext-target="text">Texte Initial</p>
+		<button data-action="click->majtext#updateText">Mettre à jour le texte</button>
+	</div>
 	{% for mix in mixes %}
 		<div class="mixBox">
 			<h2>{{mix.title}}</h2>
