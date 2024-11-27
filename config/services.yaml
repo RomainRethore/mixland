@@ -26,3 +26,7 @@ services:
     App\Service\MailService:
         arguments:
             $mailer: '@mailer'
+
+    App\EventSubscriber\UserLogin:
+        tags:
+            - { name: 'kernel.event_subscriber' }

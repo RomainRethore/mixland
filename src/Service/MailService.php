@@ -26,4 +26,15 @@ class MailService
 
         $this->mailer->send($email);
     }
+
+    public function sendUserLoggedInMail(User $user)
+    {
+        $email = (new Email())
+            ->from('no-reply@example.com')
+            ->to('user@example.com')
+            ->subject('New User Logged In')
+            ->html('<p>A new user has logged in: ' . $user->getName() . '</p>');
+
+        $this->mailer->send($email);
+    }
 }
