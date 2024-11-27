@@ -24,3 +24,5 @@
 ###< symfony/asset-mapper ###
 
 /public/uploads/
+/assets/image/
+/assets/audio/

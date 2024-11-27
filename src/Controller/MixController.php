@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Form\MixFormType;
 use App\Repository\MixRepository;
 use App\Service\MailService;
+use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Id;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,7 +18,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class MixController extends AbstractController
 {
@@ -37,7 +38,7 @@ class MixController extends AbstractController
     }
 
     #[Route('mix/new', name: 'app_mix_new')]
-    public function new(Request $request, EntityManagerInterface $entityManager, MailService $mailService, SluggerInterface $slugger, #[Autowire('%kernel.project_dir%/public/uploads/')] string $mixesDirectory): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, FileUploader $fileUploader, MailService $mailService, SluggerInterface $slugger, #[Autowire('%kernel.project_dir%/public/uploads/')] string $mixesDirectory): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
@@ -56,59 +57,12 @@ class MixController extends AbstractController
             $mixCover = $form->get('cover')->getData();
 
             if ($mixFile) {
-
-                $originalFilename = pathinfo($mixFile->getClientOriginalName(), PATHINFO_FILENAME);
-
-                $safeFilename = $slugger->slug($originalFilename);
-
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $mixFile->getClientOriginalExtension();
-
-                /** @var \App\Entity\User $user */
-                $user = $this->getUser();
-
-                $userDirectory = $mixesDirectory . '/' . $user->getId();
-
-                if (!is_dir($userDirectory)) {
-                    mkdir($userDirectory, 0777, true);
-                }
-
-                try {
-                    $mixFile->move($userDirectory, $newFilename);
-                } catch (FileException $e) {
-                    $this->addFlash('error', 'Mix file could not be uploaded');
-
-                    return $this->redirectToRoute('app_mix');
-                }
-
-                $mix->setAudio('uploads/' . $user->getId() . '/' . $newFilename);
+                $newMixFile = $fileUploader->upload($mixFile);
+                $mix->setAudio($newMixFile);
             }
-
             if ($mixCover) {
-
-                $originalFilename = pathinfo($mixCover->getClientOriginalName(), PATHINFO_FILENAME);
-
-                $safeFilename = $slugger->slug($originalFilename);
-
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $mixCover->getClientOriginalExtension();
-
-                /** @var \App\Entity\User $user */
-                $user = $this->getUser();
-
-                $userDirectory = $mixesDirectory . '/' . $user->getId();
-
-                if (!is_dir($userDirectory)) {
-                    mkdir($userDirectory, 0777, true);
-                }
-
-                try {
-                    $mixCover->move($userDirectory, $newFilename);
-                } catch (FileException $e) {
-                    $this->addFlash('error', 'Mix cover could not be uploaded');
-
-                    return $this->redirectToRoute('app_mix');
-                }
-
-                $mix->setCover('uploads/' . $user->getId() . '/' . $newFilename);
+                $newMixCover = $fileUploader->upload($mixCover);
+                $mix->setCover($newMixCover);
             }
 
             $entityManager->persist($mix);
@@ -148,7 +102,7 @@ class MixController extends AbstractController
     }
 
     #[Route('/mix/{id}/update', name: 'app_mix_update')]
-    public function update(Request $request, int $id, Mix $mix, EntityManagerInterface $entityManager, SluggerInterface $slugger, #[Autowire('%kernel.project_dir%/public/uploads/')] string $mixesDirectory): Response
+    public function update(Request $request, int $id, Mix $mix, FileUploader $fileUploader, EntityManagerInterface $entityManager, SluggerInterface $slugger, #[Autowire('%kernel.project_dir%/public/uploads/')] string $mixesDirectory): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
@@ -165,60 +119,42 @@ class MixController extends AbstractController
             $mixFile = $form->get('audio')->getData();
             $mixCover = $form->get('cover')->getData();
 
+            // if ($mixFile) {
+
+            //     $originalFilename = pathinfo($mixFile->getClientOriginalName(), PATHINFO_FILENAME);
+
+            //     $safeFilename = $slugger->slug($originalFilename);
+
+            //     $newFilename = $safeFilename . '-' . uniqid() . '.' . $mixFile->getClientOriginalExtension();
+
+            //     /** @var \App\Entity\User $user */
+            //     $user = $this->getUser();
+
+            //     $userDirectory = $mixesDirectory . '/' . $user->getId();
+
+            //     if (!is_dir($userDirectory)) {
+            //         mkdir($userDirectory, 0777, true);
+            //     }
+
+            //     try {
+            //         $mixFile->move($userDirectory, $newFilename);
+            //     } catch (FileException $e) {
+            //         $this->addFlash('error', 'Mix file could not be uploaded');
+
+            //         return $this->redirectToRoute('app_mix');
+            //     }
+
+            //     $mix->setAudio('uploads/' . $user->getId() . '/' . $newFilename);
+            // }
+
             if ($mixFile) {
-
-                $originalFilename = pathinfo($mixFile->getClientOriginalName(), PATHINFO_FILENAME);
-
-                $safeFilename = $slugger->slug($originalFilename);
-
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $mixFile->getClientOriginalExtension();
-
-                /** @var \App\Entity\User $user */
-                $user = $this->getUser();
-
-                $userDirectory = $mixesDirectory . '/' . $user->getId();
-
-                if (!is_dir($userDirectory)) {
-                    mkdir($userDirectory, 0777, true);
-                }
-
-                try {
-                    $mixFile->move($userDirectory, $newFilename);
-                } catch (FileException $e) {
-                    $this->addFlash('error', 'Mix file could not be uploaded');
-
-                    return $this->redirectToRoute('app_mix');
-                }
-
-                $mix->setAudio('uploads/' . $user->getId() . '/' . $newFilename);
+                $newMixFile = $fileUploader->upload($mixFile);
+                $mix->setAudio($newMixFile);
             }
 
             if ($mixCover) {
-
-                $originalFilename = pathinfo($mixCover->getClientOriginalName(), PATHINFO_FILENAME);
-
-                $safeFilename = $slugger->slug($originalFilename);
-
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $mixCover->getClientOriginalExtension();
-
-                /** @var \App\Entity\User $user */
-                $user = $this->getUser();
-
-                $userDirectory = $mixesDirectory . '/' . $user->getId();
-
-                if (!is_dir($userDirectory)) {
-                    mkdir($userDirectory, 0777, true);
-                }
-
-                try {
-                    $mixCover->move($userDirectory, $newFilename);
-                } catch (FileException $e) {
-                    $this->addFlash('error', 'Mix cover could not be uploaded');
-
-                    return $this->redirectToRoute('app_mix');
-                }
-
-                $mix->setCover('uploads/' . $user->getId() . '/' . $newFilename);
+                $newMixCover = $fileUploader->upload($mixCover);
+                $mix->setCover($newMixCover);
             }
 
             $entityManager->persist($mix);
