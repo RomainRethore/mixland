@@ -56,67 +56,10 @@ class MixController extends AbstractController
             $mixFile = $form->get('audio')->getData();
             $mixCover = $form->get('cover')->getData();
 
-            // if ($mixFile) {
-
-            //     $originalFilename = pathinfo($mixFile->getClientOriginalName(), PATHINFO_FILENAME);
-
-            //     $safeFilename = $slugger->slug($originalFilename);
-
-            //     $newFilename = $safeFilename . '-' . uniqid() . '.' . $mixFile->getClientOriginalExtension();
-
-            //     /** @var \App\Entity\User $user */
-            //     $user = $this->getUser();
-
-            //     $userDirectory = $mixesDirectory . '/' . $user->getId();
-
-            //     if (!is_dir($userDirectory)) {
-            //         mkdir($userDirectory, 0777, true);
-            //     }
-
-            //     try {
-            //         $mixFile->move($userDirectory, $newFilename);
-            //     } catch (FileException $e) {
-            //         $this->addFlash('error', 'Mix file could not be uploaded');
-
-            //         return $this->redirectToRoute('app_mix');
-            //     }
-
-            //     $mix->setAudio('uploads/' . $user->getId() . '/' . $newFilename);
-            // }
-
-            // if ($mixCover) {
-
-            //     $originalFilename = pathinfo($mixCover->getClientOriginalName(), PATHINFO_FILENAME);
-
-            //     $safeFilename = $slugger->slug($originalFilename);
-
-            //     $newFilename = $safeFilename . '-' . uniqid() . '.' . $mixCover->getClientOriginalExtension();
-
-            //     /** @var \App\Entity\User $user */
-            //     $user = $this->getUser();
-
-            //     $userDirectory = $mixesDirectory . '/' . $user->getId();
-
-            //     if (!is_dir($userDirectory)) {
-            //         mkdir($userDirectory, 0777, true);
-            //     }
-
-            //     try {
-            //         $mixCover->move($userDirectory, $newFilename);
-            //     } catch (FileException $e) {
-            //         $this->addFlash('error', 'Mix cover could not be uploaded');
-
-            //         return $this->redirectToRoute('app_mix');
-            //     }
-
-            //     $mix->setCover('uploads/' . $user->getId() . '/' . $newFilename);
-            // }
-
             if ($mixFile) {
                 $newMixFile = $fileUploader->upload($mixFile);
                 $mix->setAudio($newMixFile);
             }
-
             if ($mixCover) {
                 $newMixCover = $fileUploader->upload($mixCover);
                 $mix->setCover($newMixCover);
@@ -176,41 +119,13 @@ class MixController extends AbstractController
             $mixFile = $form->get('audio')->getData();
             $mixCover = $form->get('cover')->getData();
 
-            if ($mixFile) {
+            // if ($mixFile) {
 
-                $originalFilename = pathinfo($mixFile->getClientOriginalName(), PATHINFO_FILENAME);
-
-                $safeFilename = $slugger->slug($originalFilename);
-
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $mixFile->getClientOriginalExtension();
-
-                /** @var \App\Entity\User $user */
-                $user = $this->getUser();
-
-                $userDirectory = $mixesDirectory . '/' . $user->getId();
-
-                if (!is_dir($userDirectory)) {
-                    mkdir($userDirectory, 0777, true);
-                }
-
-                try {
-                    $mixFile->move($userDirectory, $newFilename);
-                } catch (FileException $e) {
-                    $this->addFlash('error', 'Mix file could not be uploaded');
-
-                    return $this->redirectToRoute('app_mix');
-                }
-
-                $mix->setAudio('uploads/' . $user->getId() . '/' . $newFilename);
-            }
-
-            // if ($mixCover) {
-
-            //     $originalFilename = pathinfo($mixCover->getClientOriginalName(), PATHINFO_FILENAME);
+            //     $originalFilename = pathinfo($mixFile->getClientOriginalName(), PATHINFO_FILENAME);
 
             //     $safeFilename = $slugger->slug($originalFilename);
 
-            //     $newFilename = $safeFilename . '-' . uniqid() . '.' . $mixCover->getClientOriginalExtension();
+            //     $newFilename = $safeFilename . '-' . uniqid() . '.' . $mixFile->getClientOriginalExtension();
 
             //     /** @var \App\Entity\User $user */
             //     $user = $this->getUser();
@@ -222,15 +137,20 @@ class MixController extends AbstractController
             //     }
 
             //     try {
-            //         $mixCover->move($userDirectory, $newFilename);
+            //         $mixFile->move($userDirectory, $newFilename);
             //     } catch (FileException $e) {
-            //         $this->addFlash('error', 'Mix cover could not be uploaded');
+            //         $this->addFlash('error', 'Mix file could not be uploaded');
 
             //         return $this->redirectToRoute('app_mix');
             //     }
 
-            //     $mix->setCover('uploads/' . $user->getId() . '/' . $newFilename);
+            //     $mix->setAudio('uploads/' . $user->getId() . '/' . $newFilename);
             // }
+
+            if ($mixFile) {
+                $newMixFile = $fileUploader->upload($mixFile);
+                $mix->setAudio($newMixFile);
+            }
 
             if ($mixCover) {
                 $newMixCover = $fileUploader->upload($mixCover);

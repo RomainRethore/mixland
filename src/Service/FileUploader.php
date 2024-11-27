@@ -46,13 +46,22 @@ class FileUploader
 
         // Crée un nom de fichier unique avec l'extension originale.
         $fileName = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
-
-        try {
-            // Déplace le fichier vers le répertoire cible.
-            $file->move($this->targetDirectory, $fileName);
-        } catch (FileException $e) {
-            // Gère l'exception si quelque chose se passe mal pendant le téléchargement.
-            return null;
+        if ($file->guessExtension() === 'mp3') {
+            try {
+                // Déplace le fichier vers le répertoire cible.
+                $file->move($this->targetDirectory . '/audio', $fileName);
+            } catch (FileException $e) {
+                // Gère l'exception si quelque chose se passe mal pendant le téléchargement.
+                return null;
+            }
+        } elseif ($file->guessExtension() === 'jpg' || $file->guessExtension() === 'jpeg' || $file->guessExtension() === 'png') {
+            try {
+                // Déplace le fichier vers le répertoire cible.
+                $file->move($this->targetDirectory . '/image', $fileName);
+            } catch (FileException $e) {
+                // Gère l'exception si quelque chose se passe mal pendant le téléchargement.
+                return null;
+            }
         }
 
         // Retourne le nom du fichier téléchargé.
