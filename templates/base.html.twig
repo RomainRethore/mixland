@@ -15,7 +15,7 @@
 			{% endblock %}
 		{% endblock %}
 	</head>
-	<body>
+	<body data-controller="theme" data-theme-target="body">
 		{% block body %}
 			<nav>
 				<div>
@@ -48,19 +48,20 @@
 						</button>
 					{% endif %}
 				</div>
+				<button data-action="theme#toggleTheme">Toggle theme</button>
 			</nav>
 			<header>
 				<h2>
 					{% block header %}{% endblock %}
 				</h2>
 			</header>
-				{% for label, messages in app.flashes %}
-					{% for message in messages %}
-						<div class="flash-{{ label }}">
-							{{ message }}
-						</div>
-					{% endfor %}
+			{% for label, messages in app.flashes %}
+				{% for message in messages %}
+					<div class="flash-{{ label }}">
+						{{ message }}
+					</div>
 				{% endfor %}
+			{% endfor %}
 			<main>
 				{% block content %}{% endblock %}
 			</main>

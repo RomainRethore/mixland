@@ -5,20 +5,22 @@ namespace App\Controller;
 use App\Entity\Mix;
 use App\Entity\User;
 use App\Form\MixFormType;
-use App\Repository\MixRepository;
 use App\Service\MailService;
-use App\Service\FileUploader;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Id;
+use App\Service\FileUploader;
+use App\Repository\MixRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Util\Json;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class MixController extends AbstractController
 {
@@ -168,5 +170,31 @@ class MixController extends AbstractController
         return $this->render('mix/update.html.twig', [
             'form' => $form
         ]);
+    }
+
+    #[Route('/mix/search', name: 'app_mix_search', methods: ['GET'])]
+    public function searchMixes(Request $request, MixRepository $mixRepository): Response
+    {
+        // $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        $searchTerm = $request->query->get('searchTerm');
+        // dd($searchTerm);
+
+        $mixes = $mixRepository->searchMixes($searchTerm);
+        $response = new JsonResponse();
+        $foundMixes = [];
+        foreach ($mixes as $mix) {
+            $foundMix = [
+                'id' => $mix->getId(),
+                'title' => $mix->getTitle(),
+                'description' => $mix->getDescription(),
+                'audio' => $mix->getAudio(),
+                'cover' => $mix->getCover()
+            ];
+            $foundMixes[] = $foundMix;
+        }
+        $response->setData($foundMixes);
+
+        return $response;
     }
 }

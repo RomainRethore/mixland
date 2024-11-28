@@ -7,22 +7,34 @@
 {% endblock %}
 
 {% block content %}
-	<p data-controller='hello'></p>
-	<div data-controller='targeter'>
-		<input type="text" data-targeter-target="input">
-		<button data-action="click->targeter#log">Afficher</button>
-	</div>
-	<div data-controller='values' data-values-greeting-value="YOYO" data-values-name-value="Robert">
-		<button data-action="click->values#showAlert">Afficher une alerte</button>
-	</div>
-	<div data-controller="event">
-		<button data-action="event#log">Bouton 1</button>
-		<button data-action="event#log">Bouton 2</button>
-		<button data-action="event#log">Bouton 3</button>
-	</div>
-	<div data-controller="majtext">
-		<p data-majtext-target="text">Texte Initial</p>
-		<button data-action="click->majtext#updateText">Mettre à jour le texte</button>
+	{# <p data-controller='hello'></p>
+															<div data-controller='targeter'>
+																<input type="text" data-targeter-target="input">
+																<button data-action="click->targeter#log">Afficher</button>
+															</div>
+															<div data-controller='values' data-values-greeting-value="YOYO" data-values-name-value="Robert">
+																<button data-action="click->values#showAlert">Afficher une alerte</button>
+															</div>
+															<div data-controller="event">
+																<button data-action="event#log">Bouton 1</button>
+																<button data-action="event#log">Bouton 2</button>
+																<button data-action="event#log">Bouton 3</button>
+															</div>
+															<div data-controller="majtext">
+																<p data-majtext-target="text">Texte Initial</p>
+																<button data-action="click->majtext#updateText">Mettre à jour le texte</button>
+															</div>
+															<div data-controller="todo">
+																<div>
+																	<input data-todo-target="input" data-action="keydown.enter->todo#addTodo" type="text">
+																	<button data-action="todo#addTodo" type="submit">Ajouter</button>
+																</div>
+																<ul data-todo-target="list"></ul>
+															</div> #}
+	<div data-controller="search" data-search-url-value="{{path('app_mix_search')}}">
+		<input data-action="input->search#searchMix" data-search-target="input" type="text">
+		<button data-action="search#searchMix">Search</button>
+		<div data-search-target="list"></div>
 	</div>
 	{% for mix in mixes %}
 		<div class="mixBox">
